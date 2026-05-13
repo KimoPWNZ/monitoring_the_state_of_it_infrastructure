@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Журнал инцидентов</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Объект</th>
+        <th>Тип</th>
+        <th>Серьёзность</th>
+        <th>Создан</th>
+        <th>Статус</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for incident in incidents %}
+      <tr>
+        <td>{{ incident.id }}</td>
+        <td>{{ incident.object.name }}</td>
+        <td>{{ incident.incident_type }}</td>
+        <td class="status {{ incident.severity }}">{{ incident.severity }}</td>
+        <td>{{ incident.created_at }}</td>
+        <td>{{ incident.status }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

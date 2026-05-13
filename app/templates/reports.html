@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="card">
+  <h2>Отчёты</h2>
+  <form method="get" class="form">
+    <input type="date" name="date_from" value="{{ date_from }}" required />
+    <input type="date" name="date_to" value="{{ date_to }}" required />
+    <button type="submit">Сформировать</button>
+  </form>
+
+  {% if report %}
+  <div class="report">
+    <p>Проверок: {{ report.total_checks }}</p>
+    <p>Инцидентов: {{ report.total_incidents }}</p>
+    <p>Критических: {{ report.critical_incidents }}</p>
+    <p>Предупреждений: {{ report.warning_incidents }}</p>
+    <p>Проблемные объекты: {{ report.top_problem_objects|join(', ') if report.top_problem_objects else 'нет' }}</p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
