@@ -1,22 +1,48 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
   <meta charset="UTF-8" />
-  <title>Monitoring System</title>
+  <title>Контур</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
   <header>
-    <h1>Monitoring System</h1>
+    <div class="brand">
+      <div class="brand-mark">К</div>
+      <div>
+        <h1>Контур</h1>
+        <span>Система мониторинга ИТ‑инфраструктуры</span>
+      </div>
+    </div>
     <nav>
       <a href="/">Главная</a>
       <a href="/objects">Объекты</a>
       <a href="/incidents">Инциденты</a>
       <a href="/reports">Отчёты</a>
     </nav>
+    <button id="themeToggle" class="theme-toggle" type="button">Тема: светлая</button>
   </header>
   <main>
     {% block content %}{% endblock %}
   </main>
+
+  <script>
+    const root = document.documentElement;
+    const toggle = document.getElementById('themeToggle');
+
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      toggle.textContent = theme === 'dark' ? 'Тема: тёмная' : 'Тема: светлая';
+      localStorage.setItem('theme', theme);
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+
+    toggle.addEventListener('click', () => {
+      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+    });
+  </script>
 </body>
 </html>

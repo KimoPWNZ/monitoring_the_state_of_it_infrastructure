@@ -1,12 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="card">
-  <h2>Обзор</h2>
-  <p>Система мониторинга состояния ИТ-инфраструктуры.</p>
-  <ul>
-    <li>Управление объектами мониторинга</li>
-    <li>Регистрация инцидентов</li>
-    <li>Отчёты по выбранному периоду</li>
-  </ul>
+<section class="card hero">
+  <div>
+    <h2>Контур — наблюдение, контроль, стабильность</h2>
+    <p>Система мониторинга состояния ИТ‑инфраструктуры с журналом инцидентов, уведомлениями и отчётами.</p>
+    <div class="hero-actions">
+      <a class="button" href="/objects">Перейти к объектам</a>
+      <a class="button ghost" href="/reports">Сформировать отчёт</a>
+    </div>
+  </div>
+  <div class="hero-panel">
+    <div class="stat">
+      <span>Статус</span>
+      <strong>Под контролем</strong>
+    </div>
+    <div class="stat">
+      <span>Реакция</span>
+      <strong>Мгновенно</strong>
+    </div>
+    <div class="stat">
+      <span>Отчёты</span>
+      <strong>Готовы</strong>
+    </div>
+  </div>
+</section>
+
+<section class="card grid">
+  <div>
+    <h3>Объекты мониторинга</h3>
+    <p>Добавляйте узлы, сервисы и API, задавайте интервалы и пороги.</p>
+  </div>
+  <div>
+    <h3>Инциденты</h3>
+    <p>Фиксация нарушений, история наблюдений и статусы.</p>
+  </div>
+  <div>
+    <h3>Отчётность</h3>
+    <p>Сводные данные по периодам и экспорт в PDF/CSV.</p>
+  </div>
 </section>
 {% endblock %}
