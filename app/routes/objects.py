@@ -1,14 +1,14 @@
-from datetime import datetime
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
+from ..auth import require_user
 from ..database import get_session
 from ..models import MonitoredObject
 from ..config import settings
 
-router = APIRouter(prefix="/objects", tags=["objects"])
+router = APIRouter(prefix="/objects", tags=["objects"], dependencies=[Depends(require_user)])
 templates = Jinja2Templates(directory="app/templates")
 
 

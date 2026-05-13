@@ -51,3 +51,17 @@ def build_report(session: Session, date_from: datetime, date_to: datetime) -> di
         "warning_incidents": warning_incidents,
         "top_problem_objects": [item[0] for item in top_objects],
     }
+
+
+def build_incident_metrics(session: Session, date_from: datetime, date_to: datetime) -> dict:
+    rows = (
+        session.query(func.date(Incident.created_at).label("day"), func.count(Incident.id))
+        .filter(Incident.created_at >= date_from, Incident.created_at <= date_to)
+        .group_by(func.date(Incident.created_at))
+        .order_by(func.date(Incident.created_at))
+        .all()
+    )
+
+    labels = [row[0] for row in rows]
+    values = [row[1] for row in rows]
+    return {"labels": labels, "values": values}

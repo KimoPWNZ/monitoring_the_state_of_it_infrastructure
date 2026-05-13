@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -10,6 +10,10 @@ class Settings(BaseSettings):
     request_timeout: int = 5
     warning_response_time: int = 1000
     critical_response_time: int = 3000
+
+    auth_enabled: bool = False
+    auth_username: str | None = None
+    auth_password: str | None = None
 
     email_notifications: bool = False
     smtp_server: str | None = None
