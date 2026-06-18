@@ -1,9 +1,13 @@
 from pydantic import BaseModel
+from typing import Literal
+
+
+ObjectType = Literal["http", "icmp", "tcp", "snmp", "local", "http_extended"]
 
 
 class MonitoredObjectCreate(BaseModel):
     name: str
-    object_type: str = "http"
+    object_type: ObjectType = "http"
     address: str
     check_interval: int = 60
     warning_threshold: float = 1000
