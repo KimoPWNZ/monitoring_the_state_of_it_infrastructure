@@ -1,30 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="card">
-  <h2>Журнал инцидентов</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Объект</th>
-        <th>Тип</th>
-        <th>Серьёзность</th>
-        <th>Создан</th>
-        <th>Статус</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for incident in incidents %}
-      <tr>
-        <td>{{ incident.id }}</td>
-        <td>{{ incident.object.name }}</td>
-        <td>{{ incident.incident_type }}</td>
-        <td class="status {{ incident.severity }}">{{ incident.severity }}</td>
-        <td>{{ incident.created_at }}</td>
-        <td>{{ incident.status }}</td>
-      </tr>
+<h2 class="mb-3">Incidents</h2>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-4">
+    <select class="form-select" name="object_id">
+      <option value="">All objects</option>
+      {% for obj in objects %}
+      <option value="{{ obj.id }}" {% if selected_object_id == obj.id %}selected{% endif %}>{{ obj.name }}</option>
       {% endfor %}
-    </tbody>
-  </table>
-</section>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <select class="form-select" name="severity">
+      <option value="">All severities</option>
+      <option value="warning" {% if selected_severity == 'warning' %}selected{% endif %}>warning</option>
+      <option value="critical" {% if selected_severity == 'critical' %}selected{% endif %}>critical</option>
+    </select>
+  </div>
+  <div class="col-md-2"><button class="btn btn-primary w-100" type="submit">Filter</button></div>
+</form>
+<table class="table table-striped table-sm">
+  <thead><tr><th>ID</th><th>Object</th><th>Type</th><th>Severity</th><th>Status</th><th>Created</th><th>Closed</th></tr></thead>
+  <tbody>
+    {% for item in incidents %}
+    <tr>
+      <td>{{ item.id }}</td><td>{{ item.object_id }}</td><td>{{ item.incident_type }}</td>
+      <td class="status-{{ item.severity }}">{{ item.severity }}</td><td>{{ item.status }}</td><td>{{ item.created_at }}</td><td>{{ item.closed_at or '-' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

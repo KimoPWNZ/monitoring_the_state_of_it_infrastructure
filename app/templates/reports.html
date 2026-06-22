@@ -1,57 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="card">
-  <h2>Отчёты</h2>
-  <form method="get" class="form">
-    <input type="date" name="date_from" value="{{ date_from }}" required />
-    <input type="date" name="date_to" value="{{ date_to }}" required />
-    <button type="submit">Сформировать</button>
-  </form>
-
-  {% if report %}
-  <div class="report">
-    <p>Проверок: {{ report.total_checks }}</p>
-    <p>Инцидентов: {{ report.total_incidents }}</p>
-    <p>Критических: {{ report.critical_incidents }}</p>
-    <p>Предупреждений: {{ report.warning_incidents }}</p>
-    <p>Проблемные объекты: {{ report.top_problem_objects|join(', ') if report.top_problem_objects else 'нет' }}</p>
+<h2 class="mb-3">Reports</h2>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-3"><input class="form-control" type="date" name="date_from" value="{{ date_from }}" required></div>
+  <div class="col-md-3"><input class="form-control" type="date" name="date_to" value="{{ date_to }}" required></div>
+  <div class="col-md-4">
+    <select class="form-select" name="object_id">
+      <option value="">All objects</option>
+      {% for obj in objects %}
+      <option value="{{ obj.id }}" {% if selected_object_id == obj.id %}selected{% endif %}>{{ obj.name }}</option>
+      {% endfor %}
+    </select>
   </div>
-
-  <div class="report-actions">
-    <a class="button" href="/reports/export?format=csv&date_from={{ date_from }}&date_to={{ date_to }}">Скачать CSV</a>
-    <a class="button" href="/reports/export?format=pdf&date_from={{ date_from }}&date_to={{ date_to }}">Скачать PDF</a>
-  </div>
-
-  <div class="chart-container">
-    <canvas id="incidentsChart"></canvas>
-  </div>
-  {% endif %}
-</section>
-
+  <div class="col-md-2"><button class="btn btn-primary w-100" type="submit">Build</button></div>
+</form>
 {% if report %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  async function loadMetrics() {
-    const response = await fetch(`/api/metrics/incidents?date_from={{ date_from }}&date_to={{ date_to }}`);
-    const data = await response.json();
-
-    const ctx = document.getElementById('incidentsChart');
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: data.labels,
-        datasets: [{
-          label: 'Инциденты по дням',
-          data: data.values,
-          borderColor: '#2563eb',
-          backgroundColor: 'rgba(37, 99, 235, 0.1)',
-          fill: true
-        }]
-      },
-    });
-  }
-
-  loadMetrics();
-</script>
+<div class="card card-body">
+  <p>Total checks: <strong>{{ report.total_checks }}</strong></p>
+  <p>Total incidents: <strong>{{ report.total_incidents }}</strong></p>
+  <p>By severity: {{ report.incidents_by_severity }}</p>
+  <p>By type: {{ report.incidents_by_type }}</p>
+  <p>Downtime (seconds): {{ report.downtime_by_object_seconds }}</p>
+  <p>Top objects: {{ report.top_problem_objects }}</p>
+</div>
 {% endif %}
 {% endblock %}

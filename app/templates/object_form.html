@@ -1,0 +1,9 @@
+<form class="row g-2" x-data="{}" hx-post="/api/objects" hx-trigger="submit" hx-swap="none" @htmx:after-request.window="window.location.reload()">
+  <div class="col-md-4"><input class="form-control" name="name" placeholder="Name" required /></div>
+  <div class="col-md-2"><input class="form-control" name="object_type" value="service" required /></div>
+  <div class="col-md-4"><input class="form-control" name="address" placeholder="https://example.com" required /></div>
+  <div class="col-md-2"><button class="btn btn-primary w-100" type="submit">Add</button></div>
+  <div class="col-md-4"><input class="form-control" name="check_interval" type="number" value="{{ settings.DEFAULT_CHECK_INTERVAL }}" min="5" /></div>
+  <div class="col-md-4"><input class="form-control" name="warning_threshold" type="number" value="{{ settings.WARNING_RESPONSE_TIME }}" min="1" /></div>
+  <div class="col-md-4"><input class="form-control" name="critical_threshold" type="number" value="{{ settings.CRITICAL_RESPONSE_TIME }}" min="1" /></div>
+</form>
