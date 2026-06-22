@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-3">Dashboard</h2>
+<div class="row mb-3">
+  <div class="col-md-4"><div class="card card-body">Normal: {{ dashboard.status_counters.get('normal', 0) }}</div></div>
+  <div class="col-md-4"><div class="card card-body">Warning: {{ dashboard.status_counters.get('warning', 0) }}</div></div>
+  <div class="col-md-4"><div class="card card-body">Critical: {{ dashboard.status_counters.get('critical', 0) }}</div></div>
+</div>
+<div class="card mb-3">
+  <div class="card-header">Objects</div>
+  <div id="dashboard-table" class="card-body" hx-get="/api/dashboard/table" hx-trigger="load, every 10s" hx-swap="innerHTML"></div>
+</div>
+<div class="card">
+  <div class="card-header">Last 10 active incidents</div>
+  <div class="card-body">
+    <table class="table table-sm">
+      <thead><tr><th>ID</th><th>Object ID</th><th>Type</th><th>Severity</th><th>Created</th></tr></thead>
+      <tbody>
+        {% for incident in dashboard.active_incidents %}
+        <tr>
+          <td>{{ incident.id }}</td>
+          <td>{{ incident.object_id }}</td>
+          <td>{{ incident.incident_type }}</td>
+          <td class="status-{{ incident.severity }}">{{ incident.severity }}</td>
+          <td>{{ incident.created_at }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

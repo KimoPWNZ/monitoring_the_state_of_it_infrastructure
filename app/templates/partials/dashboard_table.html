@@ -1,0 +1,15 @@
+<table class="table table-sm">
+  <thead><tr><th>ID</th><th>Name</th><th>Type</th><th>Address</th><th>Status</th><th>Last Check</th></tr></thead>
+  <tbody>
+    {% for obj in objects %}
+    <tr>
+      <td>{{ obj.id }}</td>
+      <td>{{ obj.name }}</td>
+      <td>{{ obj.object_type }}</td>
+      <td>{{ obj.address }}</td>
+      <td class="status-{{ obj.status }}">{{ obj.status }}</td>
+      <td>{{ obj.last_check_at or '-' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

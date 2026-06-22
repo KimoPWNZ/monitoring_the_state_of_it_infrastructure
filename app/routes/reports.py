@@ -1,70 +1,53 @@
 from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import RedirectResponse, Response
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-from ..auth import require_user
-from ..database import get_session
-from ..services.report_service import build_report
-from ..services.export_service import build_report_csv, build_report_pdf
+from app import crud
+from app.database import get_db
+from app.report_service import build_report
 
-router = APIRouter(prefix="/reports", tags=["reports"], dependencies=[Depends(require_user)])
+router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
 
-@router.get("")
-def reports(
+@router.get("/api/reports")
+def api_report(
+    date_from: datetime,
+    date_to: datetime,
+    object_id: int | None = None,
+    db: Session = Depends(get_db),
+):
+    if date_to < date_from:
+        raise HTTPException(status_code=400, detail="date_to must be greater than or equal to date_from")
+    return build_report(db, date_from, date_to, object_id=object_id)
+
+
+@router.get("/reports", response_class=HTMLResponse)
+def reports_page(
     request: Request,
     date_from: str | None = None,
     date_to: str | None = None,
-    session: Session = Depends(get_session),
+    object_id: int | None = None,
+    db: Session = Depends(get_db),
 ):
-    if not date_from or not date_to:
-        return templates.TemplateResponse(
-            "reports.html",
-            {"request": request, "report": None, "date_from": None, "date_to": None},
-        )
+    report = None
+    parsed_from = parsed_to = None
+    if date_from and date_to:
+        parsed_from = datetime.fromisoformat(date_from)
+        parsed_to = datetime.fromisoformat(date_to)
+        report = build_report(db, parsed_from, parsed_to, object_id=object_id)
 
-    start = datetime.fromisoformat(date_from)
-    end = datetime.fromisoformat(date_to)
-    report = build_report(session, start, end)
     return templates.TemplateResponse(
-        "reports.html",
-        {
-            "request": request,
+        request=request,
+        name="reports.html",
+        context={
             "report": report,
-            "date_from": date_from,
-            "date_to": date_to,
+            "objects": crud.get_objects(db),
+            "selected_object_id": object_id,
+            "date_from": parsed_from.date().isoformat() if parsed_from else "",
+            "date_to": parsed_to.date().isoformat() if parsed_to else "",
         },
     )
-
-
-@router.get("/export")
-def export_report(
-    format: str,
-    date_from: str,
-    date_to: str,
-    session: Session = Depends(get_session),
-):
-    start = datetime.fromisoformat(date_from)
-    end = datetime.fromisoformat(date_to)
-    report = build_report(session, start, end)
-
-    if format == "csv":
-        data = build_report_csv(report)
-        return Response(
-            content=data,
-            media_type="text/csv",
-            headers={"Content-Disposition": "attachment; filename=report.csv"},
-        )
-
-    if format == "pdf":
-        data = build_report_pdf(report, date_from, date_to)
-        return Response(
-            content=data,
-            media_type="application/pdf",
-            headers={"Content-Disposition": "attachment; filename=report.pdf"},
-        )
-
-    raise HTTPException(status_code=400, detail="Unsupported format")
