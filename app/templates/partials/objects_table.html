@@ -8,12 +8,10 @@
       <td>{{ obj.object_type }}</td>
       <td>{{ obj.address }}</td>
       <td class="status-{{ obj.status }}">{{ obj.status }}</td>
-      <td x-data="{}">
+      <td>
         <button class="btn btn-sm btn-danger"
                 hx-delete="/api/objects/{{ obj.id }}"
-                hx-confirm="Delete object?"
                 hx-target="#objects-table"
-                hx-get="/objects/table"
                 hx-swap="innerHTML">Delete</button>
       </td>
     </tr>

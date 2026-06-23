@@ -2,5 +2,5 @@
 {% block content %}
 <h2 class="mb-3">Objects</h2>
 <div class="card mb-3"><div class="card-body">{% include "object_form.html" %}</div></div>
-<div class="card"><div id="objects-table" class="card-body" hx-get="/objects/table" hx-trigger="load, every 10s" hx-swap="innerHTML"></div></div>
+<div class="card"><div id="objects-table" class="card-body" hx-get="/objects/table" hx-trigger="load" hx-swap="innerHTML"></div></div>
 {% endblock %}
